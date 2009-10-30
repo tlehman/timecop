@@ -155,6 +155,45 @@ class TestTimecop < Test::Unit::TestCase
     end
   end
   
+  def test_freeze_with_datetime_on_specific_timezone_during_dst
+    each_timezone do
+      t = DateTime.parse("2009-10-11 00:38:00 +0200")
+      assert_equal "+02:00", t.zone
+      Timecop.freeze(t) do
+        assert_equal t, DateTime.now
+      end
+    end
+  end
+  
+  def test_freeze_with_datetime_on_specific_timezone_not_during_dst
+    each_timezone do
+      t = DateTime.parse("2009-11-11 00:38:00 +0200")
+      assert_equal "+02:00", t.zone
+      Timecop.freeze(t) do
+        assert_equal t, DateTime.now
+      end
+    end    
+  end
+
+  def test_mocked_date_time_now_is_local
+    each_timezone do
+      t = DateTime.parse("2009-10-11 00:38:00 +0200")
+      Timecop.freeze(t) do
+        assert_equal local_offset, DateTime.now.offset
+      end
+    end
+  end
+  
+  def test_freeze_with_utc_time
+    each_timezone do
+      t = Time.utc(2008, 10, 10, 10, 10, 10)
+      local = t.getlocal
+      Timecop.freeze(t) do
+        assert_equal local, Time.now
+      end
+    end
+  end
+  
   def test_recursive_rebasing_maintains_each_context
     t = Time.local(2008, 10, 10, 10, 10, 10)
     Timecop.travel(2008, 10, 10, 10, 10, 10) do 
