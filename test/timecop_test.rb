@@ -413,4 +413,11 @@ class TestTimecop < Test::Unit::TestCase
     assert_equal date, Time.now
     assert_equal date, Time.new
   end
+
+  def test_benjamin_button_mode
+    time_of_death = Time.now
+    Timecop.benjamin_button
+    sleep 5
+    assert_equal (Time.now < time_of_death), true
+  end
 end
