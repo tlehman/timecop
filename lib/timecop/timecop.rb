@@ -81,6 +81,11 @@ class Timecop
       block_given? ? val : nil
     end
 
+    # Allows you to run time in reverse, your clock will tick at -1 second per second.
+    def benjamin_button(*args, &block)
+      scale(-1, &block)
+    end
+
     def baseline
       instance().send(:baseline)
     end
